@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "emergentintegrations"
+version = "0.1.1"
+description = "Lightweight async LLM chat client built on the OpenAI SDK, with optional Emergent proxy routing."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Emergent Team", email = "team@emergent.sh" }]
+keywords = ["llm", "openai", "chat", "emergent"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "openai>=1.99.0,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4,<10",
+    "pytest-asyncio>=1.3,<2",
+    "build>=1.2",
+    "twine>=5.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/emergentbase/emergent-llm-sdk"
+Issues = "https://github.com/emergentbase/emergent-llm-sdk/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/emergentintegrations"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/emergentintegrations", "README.md", "LICENSE", "pyproject.toml", "tests"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
