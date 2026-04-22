@@ -1,8 +1,6 @@
 # emergent-llm-sdk
 
-Source for the **`emergentintegrations`** Python package — a small async chat client built on top of the [OpenAI SDK](https://github.com/openai/openai-python). Works with any OpenAI-compatible endpoint, and routes through the Emergent integration proxy when given an `sk-emergent-*` key.
-
-> The GitHub repo is `emergent-llm-sdk`; the PyPI distribution and the Python import path are both `emergentintegrations`.
+A small async chat client built on top of the [OpenAI SDK](https://github.com/openai/openai-python). Works with any OpenAI-compatible endpoint, and routes through the Emergent integration proxy when given an `sk-emergent-*` key.
 
 ## Install
 
@@ -15,8 +13,6 @@ pip install emergentintegrations
 ```python
 import asyncio
 from emergentintegrations import LlmChat, UserMessage, ImageContent
-# Existing template code can also keep its original import path:
-# from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
 
 async def main():
     chat = (
