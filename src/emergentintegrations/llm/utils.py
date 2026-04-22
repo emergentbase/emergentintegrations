@@ -1,14 +1,13 @@
 """Environment helpers kept for backwards compatibility with existing callers."""
-from __future__ import annotations
 
-from typing import Optional
+from __future__ import annotations
 
 from .._proxy import DEFAULT_PROXY_URL
 from .._proxy import get_app_identifier as _get_app_identifier
 from .._proxy import get_integration_proxy_url as _get_integration_proxy_url
 
 
-def get_app_identifier() -> Optional[str]:
+def get_app_identifier() -> str | None:
     return _get_app_identifier()
 
 

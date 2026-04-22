@@ -1,8 +1,9 @@
 """Offline unit tests — no network, no OpenAI API calls."""
+
 from __future__ import annotations
 
 from types import SimpleNamespace
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -18,7 +19,7 @@ from emergentintegrations.llm.openai import LlmChat as LlmChatOpenaiShim
 
 
 class _FakeCompletions:
-    def __init__(self, container: Dict[str, Any], response: Any) -> None:
+    def __init__(self, container: dict[str, Any], response: Any) -> None:
         self._container = container
         self._response = response
 
@@ -33,12 +34,12 @@ class _FakeChat:
 
 
 class _FakeClient:
-    def __init__(self, container: Dict[str, Any], response: Any) -> None:
+    def __init__(self, container: dict[str, Any], response: Any) -> None:
         self.chat = _FakeChat(_FakeCompletions(container, response))
 
 
-def _patch_client(chat: LlmChat, response: Any) -> Dict[str, Any]:
-    container: Dict[str, Any] = {}
+def _patch_client(chat: LlmChat, response: Any) -> dict[str, Any]:
+    container: dict[str, Any] = {}
     chat._client = lambda: _FakeClient(container, response)  # type: ignore[method-assign]
     return container
 

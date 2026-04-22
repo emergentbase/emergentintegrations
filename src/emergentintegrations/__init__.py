@@ -1,4 +1,5 @@
 """emergentintegrations — lightweight async LLM chat client on top of the OpenAI SDK."""
+
 from .llm.chat import (
     ChatError,
     FileContent,

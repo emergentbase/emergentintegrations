@@ -4,11 +4,12 @@ Routes to the Emergent integration proxy when the API key begins with
 ``sk-emergent-``; otherwise talks to OpenAI (or any OpenAI-compatible
 endpoint supplied via ``base_url``) directly.
 """
+
 from __future__ import annotations
 
 import base64
 import pathlib
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from openai import AsyncOpenAI
 
@@ -53,8 +54,8 @@ class FileContentWithMimeType(FileContent):
 class UserMessage:
     def __init__(
         self,
-        text: Optional[str] = None,
-        file_contents: Optional[List[FileContent]] = None,
+        text: str | None = None,
+        file_contents: list[FileContent] | None = None,
     ) -> None:
         self.text = text
         self.file_contents = list(file_contents or [])
@@ -73,31 +74,31 @@ class LlmChat:
         session_id: str,
         system_message: str,
         *,
-        initial_messages: Optional[List[Dict[str, Any]]] = None,
-        custom_headers: Optional[Dict[str, str]] = None,
-        base_url: Optional[str] = None,
+        initial_messages: list[dict[str, Any]] | None = None,
+        custom_headers: dict[str, str] | None = None,
+        base_url: str | None = None,
     ) -> None:
         self.api_key = api_key
         self.session_id = session_id
         self.model = "gpt-4o"
-        self.messages: List[Dict[str, Any]] = list(
+        self.messages: list[dict[str, Any]] = list(
             initial_messages or [{"role": "system", "content": system_message}]
         )
-        self.extra_params: Dict[str, Any] = {}
-        self.custom_headers: Dict[str, str] = dict(custom_headers or {})
+        self.extra_params: dict[str, Any] = {}
+        self.custom_headers: dict[str, str] = dict(custom_headers or {})
 
         app_id = get_app_identifier()
         if app_id:
             self.custom_headers.setdefault("X-App-ID", app_id)
 
         if base_url is not None:
-            self._base_url: Optional[str] = base_url
+            self._base_url: str | None = base_url
         elif is_emergent_key(api_key):
             self._base_url = f"{get_integration_proxy_url().rstrip('/')}/llm"
         else:
             self._base_url = None
 
-    def with_model(self, provider: str, model: str) -> "LlmChat":
+    def with_model(self, provider: str, model: str) -> LlmChat:
         """Set the target model.
 
         ``provider`` is accepted for backwards compatibility. With a direct
@@ -109,23 +110,23 @@ class LlmChat:
         self.model = model
         return self
 
-    def with_params(self, **params: Any) -> "LlmChat":
+    def with_params(self, **params: Any) -> LlmChat:
         self.extra_params.update(params)
         return self
 
-    async def get_messages(self) -> List[Dict[str, Any]]:
+    async def get_messages(self) -> list[dict[str, Any]]:
         return self.messages
 
     def _client(self) -> AsyncOpenAI:
-        kwargs: Dict[str, Any] = {"api_key": self.api_key}
+        kwargs: dict[str, Any] = {"api_key": self.api_key}
         if self._base_url:
             kwargs["base_url"] = self._base_url
         if self.custom_headers:
             kwargs["default_headers"] = self.custom_headers
         return AsyncOpenAI(**kwargs)
 
-    def _build_user_turn(self, message: UserMessage) -> List[Dict[str, Any]]:
-        parts: List[Dict[str, Any]] = []
+    def _build_user_turn(self, message: UserMessage) -> list[dict[str, Any]]:
+        parts: list[dict[str, Any]] = []
         if message.text:
             parts.append({"type": "text", "text": message.text})
         for content in message.file_contents:
@@ -134,20 +135,12 @@ class LlmChat:
                 parts.append(
                     {
                         "type": "image_url",
-                        "image_url": {
-                            "url": f"data:{mime};base64,{content.file_content_base64}"
-                        },
+                        "image_url": {"url": f"data:{mime};base64,{content.file_content_base64}"},
                     }
                 )
             else:
-                parts.append(
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:{content.content_type};base64,{content.file_content_base64}"
-                        },
-                    }
-                )
+                data_url = f"data:{content.content_type};base64,{content.file_content_base64}"
+                parts.append({"type": "image_url", "image_url": {"url": data_url}})
         if not parts:
             raise ChatError("UserMessage must contain text or at least one file")
         return [{"role": "user", "content": parts}]
@@ -173,7 +166,7 @@ class LlmChat:
 
     async def send_message_multimodal_response(
         self, user_message: UserMessage
-    ) -> Tuple[Optional[str], List[Dict[str, str]]]:
+    ) -> tuple[str | None, list[dict[str, str]]]:
         """Send a message and return ``(text, images)``.
 
         ``images`` is a list of ``{"mime_type", "data"}`` dicts populated when
@@ -192,8 +185,8 @@ class LlmChat:
             raise ChatError(f"Failed to generate multimodal completion: {exc}") from exc
 
         message = response.choices[0].message
-        text: Optional[str] = getattr(message, "content", None)
-        images: List[Dict[str, str]] = []
+        text: str | None = getattr(message, "content", None)
+        images: list[dict[str, str]] = []
 
         raw_images = getattr(message, "images", None)
         if raw_images:
