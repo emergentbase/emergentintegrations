@@ -1,4 +1,4 @@
-# emergent-llm-sdk
+# emergentintegrations
 
 A small async chat client built on top of the [OpenAI SDK](https://github.com/openai/openai-python). Works with any OpenAI-compatible endpoint, and routes through the Emergent integration proxy when given an `sk-emergent-*` key.
 
@@ -68,8 +68,8 @@ All of the above are importable from either `emergentintegrations`, `emergentint
 ## Development
 
 ```bash
-git clone https://github.com/emergentbase/emergent-llm-sdk
-cd emergent-llm-sdk
+git clone https://github.com/emergentbase/emergentintegrations
+cd emergentintegrations
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest
