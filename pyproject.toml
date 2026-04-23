@@ -9,7 +9,7 @@ description = "Lightweight async LLM chat client built on the OpenAI SDK, with o
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
-authors = [{ name = "Emergent Team", email = "team@emergent.sh" }]
+authors = [{ name = "Emergent Team" }]
 keywords = ["llm", "openai", "chat", "emergent"]
 classifiers = [
     "Development Status :: 3 - Alpha",
