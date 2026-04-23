@@ -39,6 +39,7 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/emergentbase/emergentintegrations"
 Issues = "https://github.com/emergentbase/emergentintegrations/issues"
+Changelog = "https://github.com/emergentbase/emergentintegrations/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/emergentintegrations"]
