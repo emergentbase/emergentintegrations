@@ -9,11 +9,12 @@ from __future__ import annotations
 
 import base64
 import pathlib
-from typing import Any
-
-from openai import AsyncOpenAI
+from typing import TYPE_CHECKING, Any
 
 from .._proxy import get_app_identifier, get_integration_proxy_url, is_emergent_key
+
+if TYPE_CHECKING:
+    from openai import AsyncOpenAI
 
 _IMAGE_MIME_SIGNATURES = (
     ("iVBORw0KGgo", "image/png"),
@@ -118,6 +119,12 @@ class LlmChat:
         return self.messages
 
     def _client(self) -> AsyncOpenAI:
+        # Imported lazily so `import emergentintegrations` (or the lightweight
+        # _proxy / llm.utils helpers) stays cheap — the openai SDK costs ~270ms
+        # of import time (openai.types pydantic models) and is only needed once a
+        # caller actually opens a chat client.
+        from openai import AsyncOpenAI
+
         kwargs: dict[str, Any] = {"api_key": self.api_key}
         if self._base_url:
             kwargs["base_url"] = self._base_url
