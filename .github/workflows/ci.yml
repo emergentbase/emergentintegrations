@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: arc-runner-dev-amd64
     strategy:
       fail-fast: false
       matrix:
